@@ -61,6 +61,8 @@ public class Metropolis {
         boolean steady = false;
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_FILENAME))) {
+            writer.printf("N=%d\n", n);
+            writer.printf("P=%f\n", p);
             for (int t = 0; t < maxIterations && !steady; t++) {
                 executeMonteCarloStep();
                 double consensus = computeAndWriteOutput(writer, t);
@@ -87,16 +89,17 @@ public class Metropolis {
 
     private double computeAndWriteOutput(PrintWriter writer, int t) {
         double consensus = 0;
-        writer.printf("%d\n", t);
+        writer.printf("iteration=%d\n", t);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int cellValue = cells[i][j].getCellStateValue();
-                writer.printf("%3d ", cellValue);
+                writer.printf("%d ", cellValue);
                 consensus += cellValue;
             }
             writer.println();
         }
         consensus = Math.abs(consensus / (n*n));
+        writer.printf("consensus=%f\n\n", consensus);
         System.out.printf("Consensus: %f\n", consensus);
 
        return consensus;
