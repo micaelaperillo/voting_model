@@ -17,13 +17,14 @@ def read_output_file(filename):
 
     with open(filename, 'r') as file:
         lines = file.readlines()
+
         
         data['N'] = int(lines[0].split('=')[1])
         data['p'] = float(lines[1].split('=')[1])
         iteration = None
         matrix = []
         
-        for line in lines[1:]:
+        for line in lines[2:]:
             line = line.strip()
             
             if line.startswith("iteration="):
@@ -48,7 +49,7 @@ def read_output_file(filename):
 
 def read_output_files():
     files = [f for f in os.listdir() if f.endswith('.txt')]
-        
+
     data = {}
     for f in files:
         data[f] = read_output_file(f)
@@ -106,6 +107,7 @@ def main():
     pygame.display.set_caption(title)
 
     data.pop('N')
+    data.pop('p')
     generations = list(data.keys())
     i = 0
 
