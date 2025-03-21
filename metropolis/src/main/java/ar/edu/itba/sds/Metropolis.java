@@ -109,12 +109,13 @@ public class Metropolis {
         double consensus = 0;
         writer.printf("iteration=%d\n", t);
         for (int i = 0; i < n; i++) {
+            writer.printf("[ ");
             for (int j = 0; j < n; j++) {
                 int cellValue = cells[i][j].getCellStateValue();
                 writer.printf("%d ", cellValue);
                 consensus += cellValue;
             }
-            writer.println();
+            writer.printf("]\n");
         }
         consensus = Math.abs(consensus / (n*n));
         consensusHistory.add(consensus);
