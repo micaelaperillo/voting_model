@@ -2,6 +2,8 @@ import pygame
 import numpy as np
 import time
 import tkinter as tk
+import sys
+import os
 
 params = {
     "grid_x": 100,
@@ -10,12 +12,14 @@ params = {
     "colors": ["#FFFFFF", "#345345"], # -1, 1
 }
 
-def read_output_file():
+def read_output_file(filename):
     data = {}
-    with open("visualization/output.txt", 'r') as file:
+
+    with open(filename, 'r') as file:
         lines = file.readlines()
         
         data['N'] = int(lines[0].split('=')[1])
+        data['p'] = float(lines[1].split('=')[1])
         iteration = None
         matrix = []
         
@@ -38,6 +42,16 @@ def read_output_file():
                 
         if iteration is not None:
             data[iteration] = {'consensus': consensus, 'matrix': matrix}  # Store last iteration
+        
+    return data
+
+
+def read_output_files():
+    files = [f for f in os.listdir() if f.endswith('.txt')]
+        
+    data = {}
+    for f in files:
+        data[f] = read_output_file(f)
     
     return data
 
@@ -63,7 +77,9 @@ def main():
 
     pygame.init()
 
-    data = read_output_file()
+    output_file = "output.txt"
+
+    data = read_output_file(output_file)
     params["grid_x"] = data['N']
     params["grid_y"] = data['N']
 

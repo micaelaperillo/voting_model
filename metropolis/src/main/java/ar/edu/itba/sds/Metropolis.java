@@ -6,10 +6,12 @@ import java.io.PrintWriter;
 import java.util.Random;
 
 public class Metropolis {
+
+    private final Integer SEED = 42;
     private final int n;
     private final double p;
     private final Cell[][] cells;
-    private final Random rng=new Random();
+    private final Random rng = new Random(SEED);
 
     private static final String OUTPUT_FILENAME = "output.txt";
 
