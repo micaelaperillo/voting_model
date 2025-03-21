@@ -3,6 +3,8 @@ package ar.edu.itba.sds;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Metropolis {
@@ -13,6 +15,7 @@ public class Metropolis {
     private final Cell[][] cells;
     private final Random rng = new Random(SEED);
 
+    private final List<Double> consensusHistory=new ArrayList<>();
     private static final String OUTPUT_FILENAME = "output.txt";
 
     public Metropolis(int n,double p){
@@ -21,13 +24,13 @@ public class Metropolis {
         cells=new Cell[n][n];
     }
 
-   public void randomCellInitialization() {
+    public void randomCellInitialization() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 cells[i][j] = new Cell(rng.nextBoolean());
             }
         }
-   }
+    }
 
     public void checkInfluence(int row,int column){
         if(rng.nextDouble()<p)
@@ -35,6 +38,19 @@ public class Metropolis {
         else
             cells[row][column].changeState(getNeighboursInfluence(row,column));
     }
+
+    public double getSusceptibility(){
+        double consensusSquaredSum=0;
+        double consensusSum=0;
+        for(Double consensus:consensusHistory ){
+            consensusSquaredSum+=consensus*consensus;
+            consensusSum+=consensus;
+        }
+        double averageSquaredConsensus=consensusSquaredSum/consensusHistory.size();
+        double averageConsensus=consensusSum/consensusHistory.size();
+        return (n*n)*((averageSquaredConsensus-(averageConsensus*averageConsensus)));
+    }
+
 
     private int getNeighboursInfluence(int row,int column){
         int neighbourInfluence=cells[(row-1+n)%n][column].getCellStateValue()
@@ -58,7 +74,7 @@ public class Metropolis {
         final double threshold = 0.001; // percentage to check for steady state
         final int checkSteps = 5; // steps to check behind for steady state
         final int maxIterations = 10000;
-        double[] consensusHistory = new double[checkSteps];
+        double[] partialConsensusHistory = new double[checkSteps];
         int stepIndex = 0;
         boolean steady = false;
 
@@ -68,12 +84,12 @@ public class Metropolis {
             for (int t = 0; t < maxIterations && !steady; t++) {
                 executeMonteCarloStep();
                 double consensus = computeAndWriteOutput(writer, t);
-                consensusHistory[stepIndex % checkSteps] = consensus;
+                partialConsensusHistory[stepIndex % checkSteps] = consensus;
 
                 if (t >= checkSteps) {
                     for (int i = 1; i < checkSteps && !steady; i++) {
                         double percentageChange =
-                                Math.abs((consensusHistory[i] - consensusHistory[i - 1]) / consensusHistory[i - 1]);
+                                Math.abs((partialConsensusHistory[i] - partialConsensusHistory[i - 1]) / partialConsensusHistory[i - 1]);
                         steady = (percentageChange <= threshold);
                     }
                 }
@@ -101,10 +117,11 @@ public class Metropolis {
             writer.println();
         }
         consensus = Math.abs(consensus / (n*n));
+        consensusHistory.add(consensus);
         writer.printf("consensus=%f\n\n", consensus);
         System.out.printf("Consensus: %f\n", consensus);
 
-       return consensus;
-   }
+        return consensus;
+    }
 
 }
