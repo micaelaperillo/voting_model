@@ -80,7 +80,7 @@ public class Metropolis {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_FILENAME))) {
             writer.printf("N=%d\n", n);
-            writer.printf("P=%f\n", p);
+            writer.printf("p=%f\n", p);
             for (int t = 0; t < maxIterations && !steady; t++) {
                 executeMonteCarloStep();
                 double consensus = computeAndWriteOutput(writer, t);
