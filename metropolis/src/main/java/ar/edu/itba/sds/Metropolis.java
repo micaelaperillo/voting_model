@@ -11,6 +11,7 @@ public class Metropolis {
 
     private final Integer SEED = 42;
     private final int n;
+    private final int maxIterations;
     private final double p;
     private final Cell[][] cells;
     private final Random rng = new Random(SEED);
@@ -18,8 +19,9 @@ public class Metropolis {
     private final List<Double> consensusHistory=new ArrayList<>();
     private static final String OUTPUT_FILENAME = "output.txt";
 
-    public Metropolis(int n,double p){
+    public Metropolis(int n,double p, int maxIterations){
         this.n=n;
+        this.maxIterations=maxIterations;
         this.p=p;
         cells=new Cell[n][n];
     }
@@ -71,31 +73,14 @@ public class Metropolis {
     public void executeSimulation() {
         final long startTime = System.currentTimeMillis();
 
-        final double threshold = 0.001; // percentage to check for steady state
-        final int checkSteps = 5; // steps to check behind for steady state
-        final int maxIterations = 10000;
-        double[] partialConsensusHistory = new double[checkSteps];
-        int stepIndex = 0;
-        boolean steady = false;
-
         try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_FILENAME))) {
             writer.printf("N=%d\n", n);
             writer.printf("p=%f\n", p);
-            for (int t = 0; t < maxIterations && !steady; t++) {
+            for (int t = 0; t < maxIterations; t++) {
                 executeMonteCarloStep();
                 double consensus = computeAndWriteOutput(writer, t);
-                partialConsensusHistory[stepIndex % checkSteps] = consensus;
-
-                if (t >= checkSteps) {
-                    for (int i = 1; i < checkSteps && !steady; i++) {
-                        double percentageChange =
-                                Math.abs((partialConsensusHistory[i] - partialConsensusHistory[i - 1]) / partialConsensusHistory[i - 1]);
-                        steady = (percentageChange <= threshold);
-                    }
-                }
-                stepIndex++;
             }
-            System.out.printf("Simulation reached %s.\n", steady ? "steady state" : "max iterations");
+            System.out.printf("Simulation reached %d max iterations\n", maxIterations);
         } catch (IOException e) {
             e.printStackTrace();
         }
