@@ -17,7 +17,7 @@ public class Metropolis {
     private final Random rng = new Random(SEED);
 
     private final List<Double> consensusHistory=new ArrayList<>();
-    private static final String OUTPUT_FILENAME = "output.txt";
+
 
     public Metropolis(int n,double p, int maxIterations){
         this.n=n;
@@ -72,8 +72,8 @@ public class Metropolis {
 
     public void executeSimulation() {
         final long startTime = System.currentTimeMillis();
-
-        try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_FILENAME))) {
+        String outputFilename=String.format("output%dX%dp%.3f.txt",n,n,p);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilename))) {
             writer.printf("N=%d\n", n);
             writer.printf("p=%f\n", p);
             for (int t = 0; t < maxIterations; t++) {
