@@ -78,7 +78,7 @@ def main():
 
     pygame.init()
 
-    output_file = "output.txt"
+    output_file = sys.argv[1]
 
     data = read_output_file(output_file)
     params["grid_x"] = data['N']

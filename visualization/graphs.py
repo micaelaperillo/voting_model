@@ -1,9 +1,10 @@
 from matplotlib import pyplot as plt
 from visualization import read_output_file, read_output_files
+import sys
 
 graphs_directory = 'graphs/'
 
-data = read_output_file("output.txt")
+data = read_output_file(sys.argv[1])
 all_output_data = read_output_files()
 
 def plot_consensus():
