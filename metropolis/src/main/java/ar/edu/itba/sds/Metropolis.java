@@ -73,14 +73,17 @@ public class Metropolis {
     public void executeSimulation() {
         final long startTime = System.currentTimeMillis();
         String outputFilename=String.format("output%dX%dp%.3f.txt",n,n,p);
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilename))) {
+        String outputEndFilename=String.format("End%dX%dp%.3f.txt",n,n,p);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilename));PrintWriter endWriter = new PrintWriter(new FileWriter(outputEndFilename))) {
             writer.printf("N=%d\n", n);
             writer.printf("p=%f\n", p);
             for (int t = 0; t < maxIterations; t++) {
                 executeMonteCarloStep();
-                double consensus = computeAndWriteOutput(writer, t);
+                computeAndWriteOutput(writer, t);
             }
-            System.out.printf("Simulation reached %d max iterations\n", maxIterations);
+            double averageConsensus=consensusHistory.stream().reduce((double)0,Double::sum)/consensusHistory.size();
+            endWriter.printf("Average Consensus: %.3f \n", averageConsensus);
+            endWriter.printf("Susceptibility: %.3f \n", getSusceptibility());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,7 +93,7 @@ public class Metropolis {
         System.out.printf("Execution time: %d ms\n", execTime);
     }
 
-    private double computeAndWriteOutput(PrintWriter writer, int t) {
+    private void computeAndWriteOutput(PrintWriter writer, int t) {
         double consensus = 0;
         writer.printf("iteration=%d\n", t);
         for (int i = 0; i < n; i++) {
@@ -107,7 +110,6 @@ public class Metropolis {
         writer.printf("consensus=%f\n\n", consensus);
         System.out.printf("Consensus: %f\n", consensus);
 
-        return consensus;
     }
 
 }
