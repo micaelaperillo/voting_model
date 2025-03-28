@@ -17,7 +17,8 @@ public class Metropolis {
     private final double p;
     private final Cell[][] cells;
     private final Random rng = new Random(SEED);
-
+    private double averageConsensus;
+    private final int stationaryStep;
     private final List<Double> consensusHistory=new ArrayList<>();
 
 
@@ -26,6 +27,14 @@ public class Metropolis {
         this.maxIterations=maxIterations;
         this.p=p;
         cells=new Cell[n][n];
+        this.stationaryStep=3000;
+    }
+    public Metropolis(int n,double p, int maxIterations,int stationaryStep){
+        this.n=n;
+        this.maxIterations=maxIterations;
+        this.p=p;
+        cells=new Cell[n][n];
+        this.stationaryStep=stationaryStep;
     }
 
     public void randomCellInitialization() {
@@ -46,12 +55,12 @@ public class Metropolis {
     public double getSusceptibility(){
         double consensusSquaredSum=0;
         double consensusSum=0;
-        for(Double consensus:consensusHistory ){
+        for(Double consensus:consensusHistory.subList(stationaryStep,consensusHistory.size())){
             consensusSquaredSum+=consensus*consensus;
             consensusSum+=consensus;
         }
-        double averageSquaredConsensus=consensusSquaredSum/consensusHistory.size();
-        double averageConsensus=consensusSum/consensusHistory.size();
+        this.averageConsensus=consensusSum/(consensusHistory.size()-stationaryStep);
+        double averageSquaredConsensus=consensusSquaredSum/(consensusHistory.size()-stationaryStep);
         return (n*n)*((averageSquaredConsensus-(averageConsensus*averageConsensus)));
     }
 
@@ -84,12 +93,11 @@ public class Metropolis {
                 executeMonteCarloStep();
                 computeAndWriteOutput(writer, t);
             }
-            double averageConsensus=consensusHistory.stream().reduce((double)0,Double::sum)/consensusHistory.size();
-
             endWriter.printf("N=%d\n", n);
             endWriter.printf("p=%.3f\n", p);
-            endWriter.printf("Average Consensus: %.3f \n", averageConsensus);
-            endWriter.printf("Susceptibility: %.3f \n", getSusceptibility());
+            double susceptibility=getSusceptibility();
+            endWriter.printf("Average Consensus: %.3f \n", this.averageConsensus);
+            endWriter.printf("Susceptibility: %.3f \n",susceptibility );
         } catch (IOException e) {
             e.printStackTrace();
         }
