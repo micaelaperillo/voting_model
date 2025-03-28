@@ -3,6 +3,8 @@ package ar.edu.itba.sds;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -70,10 +72,11 @@ public class Metropolis {
         }
     }
 
-    public void executeSimulation() {
+    public void executeSimulation() throws IOException {
         final long startTime = System.currentTimeMillis();
         String outputFilename=String.format("output%dX%dp%.3f.txt",n,n,p);
-        String outputEndFilename=String.format("End%dX%dp%.3f.txt",n,n,p);
+        String outputEndFilename=String.format("endOutputs/End%dX%dp%.3f.txt",n,n,p);
+        Files.createDirectories(Paths.get("endOutputs/"));
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputFilename));PrintWriter endWriter = new PrintWriter(new FileWriter(outputEndFilename))) {
             writer.printf("N=%d\n", n);
             writer.printf("p=%f\n", p);
@@ -82,6 +85,9 @@ public class Metropolis {
                 computeAndWriteOutput(writer, t);
             }
             double averageConsensus=consensusHistory.stream().reduce((double)0,Double::sum)/consensusHistory.size();
+
+            endWriter.printf("N=%d\n", n);
+            endWriter.printf("p=%.3f\n", p);
             endWriter.printf("Average Consensus: %.3f \n", averageConsensus);
             endWriter.printf("Susceptibility: %.3f \n", getSusceptibility());
         } catch (IOException e) {
@@ -111,5 +117,6 @@ public class Metropolis {
         System.out.printf("Consensus: %f\n", consensus);
 
     }
+    public List<Double> getConsensusHistory(){return this.consensusHistory;}
 
 }
