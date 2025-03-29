@@ -12,9 +12,9 @@ public class Main {
         metropolis.executeSimulation();
 
     }
-    public static void RunMultipleSimulaitons(int[]ns,double[]ps) throws IOException {
+    public static void RunMultipleSimulations(int[]ns,double[]ps) throws IOException {
         for (int n : ns) {
-            for (Double p : ps) {
+            for (double p : ps) {
                 Metropolis metropolis = new Metropolis(n, p, 10000);
                 metropolis.randomCellInitialization();
                 metropolis.executeSimulation();
