@@ -2,3 +2,4 @@
 .vs/
 *.iml
 target/
+__pycache__/
