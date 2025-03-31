@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -42,7 +43,7 @@ def plot_data(df):
     plt.show()
 
 def main():
-    directory = '../endOutputs'
+    directory = sys.argv[1]
     df = read_data(directory)
     print(df)
     plot_data(df)
