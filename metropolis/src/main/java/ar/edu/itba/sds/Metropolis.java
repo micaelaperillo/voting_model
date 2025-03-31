@@ -64,9 +64,9 @@ public class Metropolis {
         }
         this.averageConsensus=consensusSum/(stationaryConsensusHistory.size());
         for(Double consensus:stationaryConsensusHistory){
-            standartDeviation+=consensus*consensus-averageConsensus;
+            standartDeviation+=(consensus-averageConsensus)*(consensus-averageConsensus);
         }
-        this.standartDeviation=Math.sqrt(standartDeviation/stationaryConsensusHistory.size());
+        this.standartDeviation=Math.sqrt(standartDeviation/(stationaryConsensusHistory.size()-1));
         double averageSquaredConsensus=consensusSquaredSum/(stationaryConsensusHistory.size());
         return (n*n)*((averageSquaredConsensus-(averageConsensus*averageConsensus)));
     }
@@ -105,7 +105,6 @@ public class Metropolis {
             double susceptibility=getSusceptibility();
             endWriter.printf("Average Consensus: %.3f \n", this.averageConsensus);
             endWriter.printf("Susceptibility: %.3f \n",susceptibility );
-            endWriter.printf("Standart Deviation: %.3d \n",this.standartDeviation);
         } catch (IOException e) {
             e.printStackTrace();
         }
