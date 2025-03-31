@@ -17,6 +17,7 @@ public class Metropolis {
     private final double p;
     private final Cell[][] cells;
     private final Random rng = new Random(SEED);
+    private double standartDeviation;
     private double averageConsensus;
     private final int stationaryStep;
     private final List<Double> consensusHistory=new ArrayList<>();
@@ -55,12 +56,18 @@ public class Metropolis {
     public double getSusceptibility(){
         double consensusSquaredSum=0;
         double consensusSum=0;
-        for(Double consensus:consensusHistory.subList(stationaryStep,consensusHistory.size())){
+        double standartDeviation=0;
+        List<Double> stationaryConsensusHistory=consensusHistory.subList(stationaryStep,consensusHistory.size());
+        for(Double consensus:stationaryConsensusHistory){
             consensusSquaredSum+=consensus*consensus;
             consensusSum+=consensus;
         }
-        this.averageConsensus=consensusSum/(consensusHistory.size()-stationaryStep);
-        double averageSquaredConsensus=consensusSquaredSum/(consensusHistory.size()-stationaryStep);
+        this.averageConsensus=consensusSum/(stationaryConsensusHistory.size());
+        for(Double consensus:stationaryConsensusHistory){
+            standartDeviation+=consensus*consensus-averageConsensus;
+        }
+        this.standartDeviation=Math.sqrt(standartDeviation/stationaryConsensusHistory.size());
+        double averageSquaredConsensus=consensusSquaredSum/(stationaryConsensusHistory.size());
         return (n*n)*((averageSquaredConsensus-(averageConsensus*averageConsensus)));
     }
 
@@ -98,6 +105,7 @@ public class Metropolis {
             double susceptibility=getSusceptibility();
             endWriter.printf("Average Consensus: %.3f \n", this.averageConsensus);
             endWriter.printf("Susceptibility: %.3f \n",susceptibility );
+            endWriter.printf("Standart Deviation: %.3d \n",this.standartDeviation);
         } catch (IOException e) {
             e.printStackTrace();
         }
