@@ -84,10 +84,10 @@ def main():
     params["grid_x"] = data['N']
     params["grid_y"] = data['N']
 
-    multiplier = 100 # TODO: hacer mas chico para N grandes
+    screen_info=pygame.display.Info()
 
-    width, height = data['N'] * multiplier, data['N'] * multiplier
-    screen = pygame.display.set_mode((data['N'] * multiplier, data['N'] * multiplier))
+    width, height = screen_info.current_w,screen_info.current_h
+    screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
 
     bg = params["bg_color"]
     screen.fill(bg)
@@ -118,7 +118,7 @@ def main():
         iteration = generations[i]
         print("Generation: ", iteration)
 
-        time.sleep(0.1)
+        time.sleep(0.05)
         newGameState = np.copy(gameState)
 
         ev = pygame.event.get()
@@ -158,7 +158,7 @@ def main():
         gameState = np.copy(newGameState)
 
         pygame.display.flip()
-        time.sleep(0.1)
+        #time.sleep(0.1)
 
         if not pauseExec:
             i += 1
