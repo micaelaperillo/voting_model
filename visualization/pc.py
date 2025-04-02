@@ -26,18 +26,18 @@ def plot_data(df):
 
     color = 'tab:blue'
     ax1.set_xlabel('p')
-    ax1.set_ylabel('Average Consensus', color=color)
+    ax1.set_ylabel('<Consenso>', color=color)
     ax1.scatter(df['p'], df['avg_consensus'], color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
     ax2 = ax1.twinx()
     color = 'tab:red'
-    ax2.set_ylabel('Susceptibility', color=color)
+    ax2.set_ylabel('Susceptibilidad', color=color)
     ax2.scatter(df['p'], df['susceptibility'], color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    plt.title('Consensus and Susceptibility vs p', pad=10)
+    plt.title('Consenso Vs Susceptibilidad', pad=10)
     plt.xlabel('p')
     plt.savefig('consensus_vs_susceptibility.png', bbox_inches='tight')
     plt.show()
