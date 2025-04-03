@@ -21,8 +21,8 @@ def read_data(directory):
     df = df.sort_values(by='p')
     return df
 
-def plot_data(df):
-    fig, ax1 = plt.subplots() # (width, height)
+def plot_consensus_vs_susceptibility(df):
+    fig, ax1 = plt.subplots()
 
     color = 'tab:blue'
     ax1.set_xlabel('p')
@@ -37,16 +37,36 @@ def plot_data(df):
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    plt.title('Consenso Vs Susceptibilidad', pad=10)
-    plt.xlabel('p')
     plt.savefig('consensus_vs_susceptibility.png', bbox_inches='tight')
+    plt.show()
+
+def plot_susceptibility_vs_p(df):
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['p'], df['susceptibility'], marker='o', linestyle='-', color='r')
+    plt.xlabel('p')
+    plt.ylabel('Susceptibilidad')
+    #plt.title('Susceptibilidad vs p')
+    plt.grid(True)
+    plt.savefig('susceptibility_vs_p.png', bbox_inches='tight')
+    plt.show()
+
+def plot_avg_consensus_vs_p(df):
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['p'], df['avg_consensus'], marker='o', linestyle='-', color='b')
+    plt.xlabel('p')
+    plt.ylabel('<Consenso>')
+    #plt.title('Promedio de Consenso vs p')
+    plt.grid(True)
+    plt.savefig('avg_consensus_vs_p.png', bbox_inches='tight')
     plt.show()
 
 def main():
     directory = sys.argv[1]
     df = read_data(directory)
     print(df)
-    plot_data(df)
+    plot_consensus_vs_susceptibility(df)
+    plot_susceptibility_vs_p(df)
+    plot_avg_consensus_vs_p(df)
 
 if __name__ == "__main__":
     main()

@@ -16,10 +16,10 @@ def plot_consensus():
     y = [data[gen]['consensus'] for gen in x]
 
     plt.plot(x, y)
-    plt.xlabel('Iterations')
-    plt.ylabel('Consensus')
-    plt.title(f'Consensus vs Iterations for N = {N} and p = {p}')
-    # plt.savefig(f'{graphs_directory}_consensus__N{N}_p{p}.png')
+    plt.xlabel('Iteraciones')
+    plt.ylabel('Consenso')
+#    plt.title(f'Consenso Vs Iteraciones para N = {N} y p = {p}')
+    plt.savefig(f'{graphs_directory}consensus__N{N}_p{p}.png')
     plt.show()
 
 def plot_consensus_p():
@@ -62,8 +62,8 @@ def plot_susceptibility_p():
 
 def main():
     plot_consensus()
-    plot_consensus_p()
-    plot_susceptibility_p()
+    #plot_consensus_p()
+    #plot_susceptibility_p()
 
 if __name__ == '__main__':
     main()
