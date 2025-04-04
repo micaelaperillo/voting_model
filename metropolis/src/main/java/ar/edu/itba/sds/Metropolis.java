@@ -28,7 +28,7 @@ public class Metropolis {
         this.maxIterations=maxIterations;
         this.p=p;
         cells=new Cell[n][n];
-        this.stationaryStep=3000;
+        this.stationaryStep=30000;
     }
     public Metropolis(int n,double p, int maxIterations,int stationaryStep){
         this.n=n;
@@ -105,6 +105,7 @@ public class Metropolis {
             double susceptibility=getSusceptibility();
             endWriter.printf("Average Consensus: %.3f \n", this.averageConsensus);
             endWriter.printf("Susceptibility: %.3f \n",susceptibility );
+            endWriter.printf("Std deviation: %.3f \n",this.standartDeviation);
         } catch (IOException e) {
             e.printStackTrace();
         }

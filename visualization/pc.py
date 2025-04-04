@@ -14,10 +14,11 @@ def read_data(directory):
                 p = float(lines[1].split('=')[1].strip())
                 avg_consensus = float(lines[2].split(': ')[1].strip())
                 susceptibility = float(lines[3].split(': ')[1].strip())
+                std_deviation = float(lines[4].split(': ')[1].strip())
 
-            data.append([N, p, avg_consensus, susceptibility])
+            data.append([N, p, avg_consensus, susceptibility, std_deviation])
 
-    df = pd.DataFrame(data, columns=['N', 'p', 'avg_consensus', 'susceptibility'])
+    df = pd.DataFrame(data, columns=['N', 'p', 'avg_consensus', 'susceptibility', 'std_deviation'])
     df = df.sort_values(by='p')
     return df
 
@@ -27,6 +28,7 @@ def plot_consensus_vs_susceptibility(df):
     color = 'tab:blue'
     ax1.set_xlabel('p')
     ax1.set_ylabel('<Consenso>', color=color)
+    ax1.errorbar(df['p'], df['avg_consensus'], yerr=df['std_deviation'], fmt='o', color=color, ecolor='lightgray', elinewidth=3, capsize=0)
     ax1.scatter(df['p'], df['avg_consensus'], color=color)
     ax1.tick_params(axis='y', labelcolor=color)
 
@@ -41,7 +43,7 @@ def plot_consensus_vs_susceptibility(df):
     plt.show()
 
 def plot_susceptibility_vs_p(df):
-    plt.figure(figsize=(10, 6))
+    #plt.figure(figsize=(10, 6))
     plt.plot(df['p'], df['susceptibility'], marker='o', linestyle='-', color='r')
     plt.xlabel('p')
     plt.ylabel('Susceptibilidad')
@@ -51,7 +53,7 @@ def plot_susceptibility_vs_p(df):
     plt.show()
 
 def plot_avg_consensus_vs_p(df):
-    plt.figure(figsize=(10, 6))
+    plt.errorbar(df['p'], df['avg_consensus'], yerr=df['std_deviation'], fmt='o', color='b', ecolor='lightgray', elinewidth=3, capsize=0)
     plt.plot(df['p'], df['avg_consensus'], marker='o', linestyle='-', color='b')
     plt.xlabel('p')
     plt.ylabel('<Consenso>')
